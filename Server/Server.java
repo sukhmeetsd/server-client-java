@@ -12,11 +12,12 @@ public class Server {
 	String MESSAGE;    //uppercase message send to the client
 	DataOutputStream out;  //stream write to the socket
 	DataInputStream in;    //stream read from the socket
+	static int clientNum;
 
 	public static void main(String args[]) {
         System.out.println("The server is running."); 
         // ServerSocket listener = null;
-			int clientNum = 1;
+			clientNum = 1;
         	try {
         			sSocket = new ServerSocket(sPort);
             		while(true) {
@@ -38,13 +39,6 @@ public class Server {
             	
         	}  
     }
-	
-    public void Server() {}
-
-	void run()
-	{
-		
-	}
 
 	
 
@@ -86,7 +80,45 @@ public class Server {
 					in = new DataInputStream(
 						new BufferedInputStream(connection.getInputStream())
 						);
-			
+					sendMessage("Welcome! You are the client number "+no+". Can you spare a square? ;)\nPlease enter your username and password in the format -> '<uname> <pwd>'");
+					message = in.readUTF();
+					StringTokenizer unamePwd = new StringTokenizer(message);
+					String uname="", pwd="";
+					if(unamePwd.hasMoreTokens()) uname = unamePwd.nextToken();
+					if (unamePwd.hasMoreTokens()) pwd = unamePwd.nextToken();
+					// System.out.println("u:p :: "+uname+":"+pwd);
+					int p = 0;
+					boolean correct = uname.equals("client"+no);
+					try{
+						p = Integer.parseInt(pwd);
+						if(p==no*no) correct = correct && true;
+					}
+					catch(Exception e){
+						correct = false;
+					}
+					// System.out.println("Sending correct: "+correct);
+
+					while(!correct){
+						// System.out.println("inside incorrect while");
+						sendMessage(correct+"");
+						message = in.readUTF();
+						unamePwd = new StringTokenizer(message);
+						uname=""; pwd="";
+						if(unamePwd.hasMoreTokens()) uname = unamePwd.nextToken();
+						if (unamePwd.hasMoreTokens()) pwd = unamePwd.nextToken();
+						p = 0;
+						correct = uname.equals("client"+no);
+						try{
+							p = Integer.parseInt(pwd);
+							if(p==no*no) correct = correct && true;
+						}
+						catch(Exception e){
+							correct = false;
+						}
+					}
+					sendMessage(correct+"");
+
+
 					while(true)
 					{
 						System.out.println("Listening");
