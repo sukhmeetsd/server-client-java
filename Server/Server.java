@@ -178,6 +178,7 @@ public class Server {
 		            // System.out.println("In the loop = "+count);
 		        }
 		        out.flush();
+		        filein.close();
 			}
 			catch(FileNotFoundException e){
 				System.out.println("File not found on the server.");
