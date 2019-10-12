@@ -4,7 +4,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public class Server {
+public class FTPServer {
 	static int sPort = 8000;    //The server will be listening on this port number
 	static ServerSocket sSocket;   //serversocket used to listen on port number 8000
 	Socket connection = null; //socket for the connection with the client
@@ -148,7 +148,8 @@ public class Server {
 					}
 				}
 				catch(IOException ioException){
-					ioException.printStackTrace();
+					System.err.println("Connection to client no. "+no+" might have been lost.");
+					// ioException.printStackTrace();
 				}
 				finally{
 					//Close connections
@@ -166,8 +167,9 @@ public class Server {
 
 		    void receiveFile(String fileName){
 			System.out.println("Receiving File: "+fileName);
+			FileOutputStream fout = null;
 			try{
-				FileOutputStream fout = new FileOutputStream(fileName);
+				fout = new FileOutputStream(fileName);
 				// DataInputStream dis = new DataInputStream(new BufferedInputStream(in));
 				long filesize = in.readLong();
 				System.out.println("Filesize: "+filesize);
@@ -182,13 +184,22 @@ public class Server {
 		            // System.out.println("In the loop, reduced filesize to "+filesize);
 		        }
 		        // System.out.println("Out of the loop");
-		        fout.close();
+		        // fout.close();
 			}
 			catch(FileNotFoundException e){
 				System.out.println("Error occurred while storing the file.");
 			}
 			catch(IOException e){
 				System.out.println("Exception while taking inputs/writing file");
+			}
+			finally{
+				try{
+					if(fout!=null) fout.close();	
+				}
+				catch(IOException e){
+					e.printStackTrace();
+				}
+				
 			}
 			// System.out.println("Out of the loop");
 		}
@@ -200,9 +211,16 @@ public class Server {
 
 			byte bytes[] = new byte[8192];
 			try{
-				System.out.println("size: "+length);
+				if(!file.exists()){
+					System.out.println("The File being asked for doesn't exist");
+					out.flush();
+					out.writeLong(-1);
+					out.flush();
+					return;
+				}
 				out.flush();
 				out.writeLong(length);
+				System.out.println("size: "+length);
 				InputStream filein = new FileInputStream(file);
 				int count;
 		        while ((count = filein.read(bytes)) > 0) {
