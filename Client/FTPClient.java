@@ -159,7 +159,6 @@ public class FTPClient {
 		InputStream filein = null;
 		boolean uploaded = false;
 		File file = new File(fileName);
-		System.out.println("Created File object");
 		if (!file.exists()) {
 			System.out.println("The file does not exist.");
 			return;
@@ -202,7 +201,6 @@ public class FTPClient {
 		System.out.println("Receiving file: "+fileName);
 		FileOutputStream fout=null;
 		try{
-			// DataInputStream dis = new DataInputStream(new BufferedInputStream(in));
 			System.out.println("Trying to get filesize...");
 			long filesize = in.readLong();
 			if(filesize==-1){

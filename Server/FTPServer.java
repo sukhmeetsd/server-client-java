@@ -91,7 +91,7 @@ public class FTPServer {
 					boolean correct = uname.equals("client"+no);
 					try{
 						p = Integer.parseInt(pwd);
-						if(p==no*no) correct = correct && true;
+						correct = (p==no*no) && true;
 					}
 					catch(Exception e){
 						correct = false;
@@ -110,7 +110,7 @@ public class FTPServer {
 						correct = uname.equals("client"+no);
 						try{
 							p = Integer.parseInt(pwd);
-							if(p==no*no) correct = correct && true;
+							correct = (p==no*no) && true;
 						}
 						catch(Exception e){
 							correct = false;
